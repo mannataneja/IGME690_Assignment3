@@ -17,7 +17,7 @@ public class Tile : MonoBehaviour
     {
         transform.localScale = Vector3.zero;
 
-        transform.DOScale(Vector3.one, 1f)
+        transform.DOScale(Vector3.one, 0.7f)
             .SetEase(Ease.OutElastic);
     }
 /*    private void OnDrawGizmos()

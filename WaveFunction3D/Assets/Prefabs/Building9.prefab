@@ -216,7 +216,7 @@ MonoBehaviour:
   - {fileID: -4621946649528050616, guid: 31187ee2cfaee044ca119698156718f4, type: 3}
   - {fileID: -7335167478820830968, guid: c26393d84489fdf458fd631ea8a696ce, type: 3}
   - {fileID: -1500196235607403390, guid: 207508d234b297d4e9366eec2afb6534, type: 3}
-  weight: 1
+  weight: 33
 --- !u!1001 &1150824004343123069
 PrefabInstance:
   m_ObjectHideFlags: 0
