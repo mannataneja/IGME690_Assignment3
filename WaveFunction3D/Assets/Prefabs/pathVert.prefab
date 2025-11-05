@@ -91,7 +91,7 @@ MonoBehaviour:
   - {fileID: -8185456594143889917, guid: 6e9830e0a74fc8642b06486b1795d6ad, type: 3}
   - {fileID: 1833665231007385866, guid: 51732045ed5117941a1e01dbf69844c4, type: 3}
   - {fileID: 2661968908957601399}
-  weight: 1
+  weight: 25
 --- !u!1001 &9108450175303991492
 PrefabInstance:
   m_ObjectHideFlags: 0

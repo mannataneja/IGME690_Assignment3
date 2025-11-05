@@ -194,12 +194,16 @@ MonoBehaviour:
   - {fileID: 1833665231007385866, guid: 51732045ed5117941a1e01dbf69844c4, type: 3}
   topEdgeTiles:
   - {fileID: -8102960937033614157, guid: 93a832ceab381fa42bc1f8e3adb14cdf, type: 3}
+  - {fileID: -4621946649528050616, guid: 31187ee2cfaee044ca119698156718f4, type: 3}
   bottomEdgeTiles:
   - {fileID: -8102960937033614157, guid: 93a832ceab381fa42bc1f8e3adb14cdf, type: 3}
+  - {fileID: -1500196235607403390, guid: 207508d234b297d4e9366eec2afb6534, type: 3}
   leftEdgeTiles:
   - {fileID: 2661968908957601399, guid: fcbf43269fd353746a23381bc75cbe74, type: 3}
+  - {fileID: 1833665231007385866, guid: 51732045ed5117941a1e01dbf69844c4, type: 3}
   rightEdgeTiles:
   - {fileID: 2661968908957601399, guid: fcbf43269fd353746a23381bc75cbe74, type: 3}
+  - {fileID: -7335167478820830968, guid: c26393d84489fdf458fd631ea8a696ce, type: 3}
   gridComponents: []
   cellObj: {fileID: 4708005233751153331, guid: 936abc963f38a804e84760def12a01ee, type: 3}
   backupTile: {fileID: -6695874881404480244, guid: e56395000485b0f45be4da83f3e978eb, type: 3}
@@ -385,13 +389,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.4003432, y: 0.00494998, z: -0.002162593, w: 0.9163494}
+  m_LocalRotation: {x: 0.40034905, y: 0, z: 0, w: 0.91636276}
   m_LocalPosition: {x: 9.31, y: 14.43, z: -6.11}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 47.2, y: 0, z: 0}
 --- !u!1 &1018176707
 GameObject:
   m_ObjectHideFlags: 0
