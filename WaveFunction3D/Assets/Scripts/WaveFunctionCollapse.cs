@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -8,12 +8,19 @@ public class WaveFunctionCollapse : MonoBehaviour
 {
     public int dimensions;
     public Tile[] tileObjects;
+    public Tile[] cornerTiles;
+    public Tile[] topEdgeTiles;
+    public Tile[] bottomEdgeTiles;
+    public Tile[] leftEdgeTiles;
+    public Tile[] rightEdgeTiles;
+
     public List<Cell> gridComponents;
     public Cell cellObj;
 
     public Tile backupTile;
 
     private int iteration;
+
 
     private void Awake()
     {
@@ -23,18 +30,71 @@ public class WaveFunctionCollapse : MonoBehaviour
 
     void InitializeGrid()
     {
-        for(int y = 0; y < dimensions; y++)
+        for (int y = 0; y < dimensions; y++)
         {
-            for(int x = 0; x < dimensions; x++)
+            for (int x = 0; x < dimensions; x++)
             {
                 Cell newCell = Instantiate(cellObj, new Vector3(x, 0, y), Quaternion.identity);
-                newCell.CreateCell(false, tileObjects);
+
+                newCell.gridX = x;
+                newCell.gridY = y;
+
+                bool isCorner =
+                    (x == 0 && y == 0) ||
+                    (x == dimensions - 1 && y == 0) ||
+                    (x == 0 && y == dimensions - 1) ||
+                    (x == dimensions - 1 && y == dimensions - 1);
+
+                bool isTopEdge = (y == dimensions - 1 && !isCorner);
+                bool isBottomEdge = (y == 0 && !isCorner);
+                bool isLeftEdge = (x == 0 && !isCorner);
+                bool isRightEdge = (x == dimensions - 1 && !isCorner);
+
+                // Assign rule-based tile options
+                if (isCorner)
+                {
+                    newCell.CreateCell(false,
+                        (cornerTiles != null && cornerTiles.Length > 0)
+                        ? cornerTiles : tileObjects);
+                }
+                else if (isTopEdge)
+                {
+                    newCell.CreateCell(false,
+                        (topEdgeTiles != null && topEdgeTiles.Length > 0)
+                        ? topEdgeTiles : tileObjects);
+                }
+                else if (isBottomEdge)
+                {
+                    newCell.CreateCell(false,
+                        (bottomEdgeTiles != null && bottomEdgeTiles.Length > 0)
+                        ? bottomEdgeTiles : tileObjects);
+                }
+                else if (isLeftEdge)
+                {
+                    newCell.CreateCell(false,
+                        (leftEdgeTiles != null && leftEdgeTiles.Length > 0)
+                        ? leftEdgeTiles : tileObjects);
+                }
+                else if (isRightEdge)
+                {
+                    newCell.CreateCell(false,
+                        (rightEdgeTiles != null && rightEdgeTiles.Length > 0)
+                        ? rightEdgeTiles : tileObjects);
+                }
+                else
+                {
+                    // ✅ Center uses ALL tiles
+                    newCell.CreateCell(false, tileObjects);
+                }
+
                 gridComponents.Add(newCell);
             }
         }
 
         StartCoroutine(CheckEntropy());
     }
+
+
 
     IEnumerator CheckEntropy()
     {
@@ -88,84 +148,78 @@ public class WaveFunctionCollapse : MonoBehaviour
                 }
                 else
                 {
-                    List<Tile> options = new List<Tile>();
-                    foreach(Tile t in tileObjects)
-                    {
-                        options.Add(t);
-                    }
+                    // Start from this cell's current domain (corner/edge restrictions preserved)
+                    List<Tile> options = new List<Tile>(gridComponents[index].tileOptions);
 
-                    if(y > 0)
+                    // If somehow empty (e.g., inspector arrays left blank), fall back to all tiles
+                    if (options.Count == 0)
+                        options.AddRange(tileObjects);
+
+                    // neighbor constraints
+                    if (y > 0)
                     {
                         Cell up = gridComponents[x + (y - 1) * dimensions];
                         List<Tile> validOptions = new List<Tile>();
-
-                        foreach(Tile possibleOptions in up.tileOptions)
+                        foreach (Tile possibleOptions in up.tileOptions)
                         {
                             var validOption = Array.FindIndex(tileObjects, obj => obj == possibleOptions);
                             var valid = tileObjects[validOption].downNeighbours;
-
                             validOptions = validOptions.Concat(valid).ToList();
                         }
-
                         CheckValidity(options, validOptions);
                     }
 
-                    if(x < dimensions - 1)
+                    if (x < dimensions - 1)
                     {
-                        Cell left = gridComponents[x + 1 + y * dimensions];
+                        Cell rightNeighbor = gridComponents[x + 1 + y * dimensions];
                         List<Tile> validOptions = new List<Tile>();
-
-                        foreach(Tile possibleOptions in left.tileOptions)
+                        foreach (Tile possibleOptions in rightNeighbor.tileOptions)
                         {
                             var validOption = Array.FindIndex(tileObjects, obj => obj == possibleOptions);
                             var valid = tileObjects[validOption].rightNeighbours;
-
                             validOptions = validOptions.Concat(valid).ToList();
                         }
-
                         CheckValidity(options, validOptions);
                     }
 
                     if (y < dimensions - 1)
                     {
-                        Cell down = gridComponents[x + (y+1) * dimensions];
+                        Cell down = gridComponents[x + (y + 1) * dimensions];
                         List<Tile> validOptions = new List<Tile>();
-
                         foreach (Tile possibleOptions in down.tileOptions)
                         {
                             var validOption = Array.FindIndex(tileObjects, obj => obj == possibleOptions);
                             var valid = tileObjects[validOption].upNeighbours;
-
                             validOptions = validOptions.Concat(valid).ToList();
                         }
-
                         CheckValidity(options, validOptions);
                     }
 
                     if (x > 0)
                     {
-                        Cell right = gridComponents[x - 1 + y * dimensions];
+                        Cell leftNeighbor = gridComponents[x - 1 + y * dimensions];
                         List<Tile> validOptions = new List<Tile>();
-
-                        foreach (Tile possibleOptions in right.tileOptions)
+                        foreach (Tile possibleOptions in leftNeighbor.tileOptions)
                         {
                             var validOption = Array.FindIndex(tileObjects, obj => obj == possibleOptions);
                             var valid = tileObjects[validOption].leftNeighbours;
-
                             validOptions = validOptions.Concat(valid).ToList();
                         }
-
                         CheckValidity(options, validOptions);
                     }
 
-                    Tile[] newTileList = new Tile[options.Count];
+                    // If constraints eliminated everything, keep at least something to avoid deadlock
+                    if (options.Count == 0)
+                        options.Add(backupTile != null ? backupTile : tileObjects[0]);
 
-                    for(int i = 0; i < options.Count; i++) {
+                    // Apply reduced domain
+                    Tile[] newTileList = new Tile[options.Count];
+                    for (int i = 0; i < options.Count; i++)
                         newTileList[i] = options[i];
-                    }
 
                     newGenerationCell[index].RecreateCell(newTileList);
                 }
+
             }
         }
 

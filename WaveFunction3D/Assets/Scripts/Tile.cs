@@ -20,9 +20,9 @@ public class Tile : MonoBehaviour
         transform.DOScale(Vector3.one, 1f)
             .SetEase(Ease.OutElastic);
     }
-    private void OnDrawGizmos()
+/*    private void OnDrawGizmos()
     {
         UnityEditor.Handles.Label(transform.position + Vector3.up * 0.5f, $"W: {weight}");
-    }
+    }*/
 
 }
