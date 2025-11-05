@@ -11,7 +11,7 @@ public class Tile : MonoBehaviour
     public Tile[] leftNeighbours;
 
     [Range(1, 100)]
-    public int weight = 1; // ← NEW: weight for probability
+    public int weight = 1; 
 
     private void Awake()
     {

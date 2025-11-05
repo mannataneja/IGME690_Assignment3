@@ -39,58 +39,41 @@ public class WaveFunctionCollapse : MonoBehaviour
                 newCell.gridX = x;
                 newCell.gridY = y;
 
-                bool isCorner =
-                    (x == 0 && y == 0) ||
-                    (x == dimensions - 1 && y == 0) ||
-                    (x == 0 && y == dimensions - 1) ||
-                    (x == dimensions - 1 && y == dimensions - 1);
-
+                bool isCorner = (x == 0 && y == 0) || (x == dimensions - 1 && y == 0) || (x == 0 && y == dimensions - 1) || (x == dimensions - 1 && y == dimensions - 1);
                 bool isTopEdge = (y == dimensions - 1 && !isCorner);
                 bool isBottomEdge = (y == 0 && !isCorner);
                 bool isLeftEdge = (x == 0 && !isCorner);
                 bool isRightEdge = (x == dimensions - 1 && !isCorner);
 
-                // Assign rule-based tile options
+                // Rule based tile options
                 if (isCorner)
                 {
-                    newCell.CreateCell(false,
-                        (cornerTiles != null && cornerTiles.Length > 0)
-                        ? cornerTiles : tileObjects);
+                    newCell.CreateCell(false, (cornerTiles != null && cornerTiles.Length > 0) ? cornerTiles : tileObjects);
                 }
                 else if (isTopEdge)
                 {
-                    newCell.CreateCell(false,
-                        (topEdgeTiles != null && topEdgeTiles.Length > 0)
-                        ? topEdgeTiles : tileObjects);
+                    newCell.CreateCell(false, (topEdgeTiles != null && topEdgeTiles.Length > 0) ? topEdgeTiles : tileObjects);
                 }
                 else if (isBottomEdge)
                 {
-                    newCell.CreateCell(false,
-                        (bottomEdgeTiles != null && bottomEdgeTiles.Length > 0)
-                        ? bottomEdgeTiles : tileObjects);
+                    newCell.CreateCell(false, (bottomEdgeTiles != null && bottomEdgeTiles.Length > 0) ? bottomEdgeTiles : tileObjects);
                 }
                 else if (isLeftEdge)
                 {
-                    newCell.CreateCell(false,
-                        (leftEdgeTiles != null && leftEdgeTiles.Length > 0)
-                        ? leftEdgeTiles : tileObjects);
+                    newCell.CreateCell(false, (leftEdgeTiles != null && leftEdgeTiles.Length > 0) ? leftEdgeTiles : tileObjects);
                 }
                 else if (isRightEdge)
                 {
-                    newCell.CreateCell(false,
-                        (rightEdgeTiles != null && rightEdgeTiles.Length > 0)
-                        ? rightEdgeTiles : tileObjects);
+                    newCell.CreateCell(false, (rightEdgeTiles != null && rightEdgeTiles.Length > 0) ? rightEdgeTiles : tileObjects);
                 }
                 else
                 {
-                    // ✅ Center uses ALL tiles
                     newCell.CreateCell(false, tileObjects);
                 }
 
                 gridComponents.Add(newCell);
             }
         }
-
         StartCoroutine(CheckEntropy());
     }
 
@@ -148,12 +131,13 @@ public class WaveFunctionCollapse : MonoBehaviour
                 }
                 else
                 {
-                    // Start from this cell's current domain (corner/edge restrictions preserved)
                     List<Tile> options = new List<Tile>(gridComponents[index].tileOptions);
 
-                    // If somehow empty (e.g., inspector arrays left blank), fall back to all tiles
+                    // fall back to all tiles
                     if (options.Count == 0)
+                    {
                         options.AddRange(tileObjects);
+                    }
 
                     // neighbor constraints
                     if (y > 0)
@@ -208,14 +192,17 @@ public class WaveFunctionCollapse : MonoBehaviour
                         CheckValidity(options, validOptions);
                     }
 
-                    // If constraints eliminated everything, keep at least something to avoid deadlock
+                    // If constraints use everything, use first element
                     if (options.Count == 0)
+                    {
                         options.Add(backupTile != null ? backupTile : tileObjects[0]);
+                    }
 
-                    // Apply reduced domain
                     Tile[] newTileList = new Tile[options.Count];
                     for (int i = 0; i < options.Count; i++)
+                    {
                         newTileList[i] = options[i];
+                    }
 
                     newGenerationCell[index].RecreateCell(newTileList);
                 }
@@ -251,12 +238,12 @@ public class WaveFunctionCollapse : MonoBehaviour
         int randomValue = UnityEngine.Random.Range(0, totalWeight);
         int cumulative = 0;
 
-        foreach (Tile t in tiles)
+        foreach (Tile tile in tiles)
         {
-            cumulative += t.weight;
+            cumulative += tile.weight;
             if (randomValue < cumulative)
             {
-                return t;
+                return tile;
             }
         }
 
